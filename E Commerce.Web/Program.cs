@@ -2,8 +2,13 @@
 using E_Commerce.Domain.Contracts;
 using E_Commerce.Persistence.Data.DataSeed;
 using E_Commerce.Persistence.Data.DbContexts;
+using E_Commerce.Persistence.Repositories;
+using E_Commerce.Services;
+using E_Commerce.Services.MappingProfiles;
+using E_Commerce.Services_Abstraction;
 using E_Commerce.Web.Extinctions;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 
 namespace E_Commerce.Web
@@ -25,8 +30,9 @@ namespace E_Commerce.Web
                 options.UseSqlServer(connectionString: builder.Configuration.GetConnectionString(name: "DefaultConnection"));
             });
             builder.Services.AddScoped<IDataInitializer, DataInitializer >();
-
-
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddAutoMapper(typeof(reference).Assembly);
 
             var app = builder.Build();
 
@@ -48,7 +54,7 @@ namespace E_Commerce.Web
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseAuthorization();
 
 
